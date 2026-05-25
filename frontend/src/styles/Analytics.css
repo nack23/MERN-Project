@@ -4,6 +4,10 @@
 
     min-height:100vh;
 
+    width:100%;
+
+    overflow-x:hidden;
+
     background:
     linear-gradient(
         135deg,
@@ -19,7 +23,13 @@
 
     flex:1;
 
+    width:100%;
+
+    min-width:0;
+
     padding:40px;
+
+    overflow-x:hidden;
 }
 
 .analytics-content h1{
@@ -29,11 +39,15 @@
     font-weight:800;
 
     margin-bottom:35px;
+
+    word-break:break-word;
 }
 
 /* STATS */
 
 .analytics-stats{
+
+    width:100%;
 
     display:grid;
 
@@ -46,6 +60,10 @@
 }
 
 .analytics-box{
+
+    width:100%;
+
+    min-width:0;
 
     background:
     linear-gradient(
@@ -70,6 +88,8 @@
     justify-content:center;
 
     transition:0.3s;
+
+    overflow:hidden;
 }
 
 .analytics-box:hover{
@@ -97,6 +117,8 @@
     color:#a855f7;
 
     font-weight:800;
+
+    word-break:break-word;
 }
 
 /* STATUS GUIDE */
@@ -146,6 +168,8 @@
     height:16px;
 
     border-radius:50%;
+
+    flex-shrink:0;
 }
 
 .done-guide{
@@ -165,6 +189,11 @@
 
 /* SUBMISSION */
 
+.submission-section{
+
+    width:100%;
+}
+
 .submission-section h2{
 
     font-size:38px;
@@ -172,9 +201,13 @@
     margin-bottom:28px;
 
     font-weight:800;
+
+    word-break:break-word;
 }
 
 .submission-grid{
+
+    width:100%;
 
     display:grid;
 
@@ -185,6 +218,10 @@
 }
 
 .submission-card{
+
+    width:100%;
+
+    min-width:0;
 
     background:
     linear-gradient(
@@ -201,6 +238,8 @@
     1px solid rgba(255,255,255,0.08);
 
     transition:0.3s;
+
+    overflow:hidden;
 }
 
 .submission-card:hover{
@@ -219,6 +258,10 @@
     font-weight:800;
 
     margin-bottom:18px;
+
+    line-height:1.3;
+
+    word-break:break-word;
 }
 
 .submission-description{
@@ -242,6 +285,8 @@
     font-size:16px;
 
     line-height:1.7;
+
+    word-break:break-word;
 }
 
 .submission-info{
@@ -265,6 +310,8 @@
     font-size:15px;
 
     font-weight:600;
+
+    word-break:break-word;
 }
 
 /* STATUS COLORS */
@@ -303,6 +350,8 @@
     padding:24px;
 
     border-radius:24px;
+
+    overflow:hidden;
 }
 
 .answer-container h4{
@@ -323,6 +372,8 @@
     border-radius:18px;
 
     line-height:1.7;
+
+    word-break:break-word;
 }
 
 /* EMPTY */
@@ -335,9 +386,15 @@
 
     display:flex;
 
+    flex-direction:column;
+
     justify-content:center;
 
     align-items:center;
+
+    gap:20px;
+
+    text-align:center;
 
     border-radius:30px;
 
@@ -356,6 +413,61 @@
     font-weight:700;
 
     color:#cfcfcf;
+
+    padding:30px;
+}
+
+.no-submission i{
+
+    font-size:54px;
+}
+
+/* ERROR */
+
+.error-message{
+
+    width:100%;
+
+    margin-bottom:24px;
+
+    padding:18px 22px;
+
+    border-radius:18px;
+
+    background:
+    rgba(239,68,68,0.12);
+
+    border:
+    1px solid rgba(239,68,68,0.25);
+
+    color:#fca5a5;
+
+    font-size:16px;
+
+    font-weight:600;
+}
+
+/* LOADER */
+
+.small-loader{
+
+    width:100%;
+
+    min-height:250px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#dbeafe;
 }
 
 /* RESPONSIVE */
@@ -375,33 +487,233 @@
 
 @media(max-width:768px){
 
+    .analytics-page{
+
+        flex-direction:column;
+
+        width:100%;
+
+        overflow-x:hidden;
+    }
+
     .analytics-content{
 
-        padding:20px;
+        width:100%;
+
+        max-width:100%;
+
+        padding:18px;
+
+        overflow-x:hidden;
     }
 
     .analytics-content h1{
 
-        font-size:40px;
+        font-size:38px;
+
+        margin-bottom:24px;
+    }
+
+    .analytics-stats{
+
+        width:100%;
+
+        grid-template-columns:1fr;
+
+        gap:18px;
+    }
+
+    .analytics-box{
+
+        width:100%;
+
+        max-width:100%;
+
+        min-height:150px;
+
+        padding:24px;
+
+        border-radius:24px;
+    }
+
+    .analytics-box h3{
+
+        font-size:20px;
     }
 
     .analytics-box h2{
 
-        font-size:44px;
-    }
-
-    .submission-card{
-
-        padding:24px;
-    }
-
-    .submission-card h3{
-
-        font-size:28px;
+        font-size:42px;
     }
 
     .status-guide{
 
         flex-direction:column;
+
+        gap:14px;
+
+        margin-bottom:30px;
+    }
+
+    .guide-item{
+
+        width:100%;
+
+        padding:14px 16px;
+    }
+
+    .guide-item p{
+
+        font-size:14px;
+    }
+
+    .submission-section h2{
+
+        font-size:30px;
+
+        margin-bottom:20px;
+    }
+
+    .submission-grid{
+
+        width:100%;
+
+        grid-template-columns:1fr;
+
+        gap:18px;
+    }
+
+    .submission-card{
+
+        width:100%;
+
+        max-width:100%;
+
+        padding:20px;
+
+        border-radius:24px;
+    }
+
+    .submission-card h3{
+
+        font-size:26px;
+    }
+
+    .submission-description{
+
+        padding:16px;
+
+        border-radius:18px;
+
+        font-size:14px;
+    }
+
+    .submission-info{
+
+        flex-direction:column;
+
+        gap:12px;
+    }
+
+    .submission-info span{
+
+        width:100%;
+
+        font-size:14px;
+    }
+
+    .answer-container{
+
+        padding:18px;
+
+        border-radius:20px;
+    }
+
+    .answer-container h4{
+
+        font-size:20px;
+    }
+
+    .answer-container p{
+
+        font-size:14px;
+
+        padding:14px;
+    }
+
+    .no-submission{
+
+        min-height:220px;
+
+        font-size:24px;
+
+        border-radius:24px;
+    }
+
+    .no-submission i{
+
+        font-size:42px;
+    }
+
+    .small-loader{
+
+        min-height:180px;
+
+        font-size:18px;
+    }
+}
+
+@media(max-width:480px){
+
+    .analytics-content{
+
+        padding:14px;
+    }
+
+    .analytics-content h1{
+
+        font-size:32px;
+    }
+
+    .analytics-box{
+
+        padding:18px;
+    }
+
+    .analytics-box h2{
+
+        font-size:36px;
+    }
+
+    .submission-card{
+
+        padding:16px;
+    }
+
+    .submission-card h3{
+
+        font-size:22px;
+    }
+
+    .submission-description{
+
+        font-size:13px;
+    }
+
+    .submission-info span{
+
+        font-size:13px;
+
+        padding:12px 14px;
+    }
+
+    .answer-container h4{
+
+        font-size:18px;
+    }
+
+    .answer-container p{
+
+        font-size:13px;
     }
 }

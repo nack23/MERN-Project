@@ -68,7 +68,7 @@ function Signup(){
       const response =
       await fetch(
 
-        "http://localhost:5000/signup-data",
+        `${process.env.REACT_APP_API_URL}/signup-data`,
 
         {
           method:"POST",

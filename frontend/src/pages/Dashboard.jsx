@@ -1,6 +1,7 @@
 import {
   useEffect,
-  useState
+  useState,
+  useCallback
 } from "react";
 
 import {
@@ -25,14 +26,10 @@ function Dashboard() {
   const navigate =
   useNavigate();
 
-  // USER
-
   const [
     user,
     setUser
   ] = useState(null);
-
-  // ANALYTICS
 
   const [
     analytics,
@@ -46,155 +43,251 @@ function Dashboard() {
     pendingTasks:0
   });
 
-  // PROJECTS
-
   const [
     projects,
     setProjects
   ] = useState([]);
-
-  // TASKS
 
   const [
     tasks,
     setTasks
   ] = useState([]);
 
-  // LOAD DATA
+  const [
+    loading,
+    setLoading
+  ] = useState(true);
+
+  const [
+    error,
+    setError
+  ] = useState("");
+
+  const fetchDashboard =
+  useCallback(
+
+    async()=>{
+
+      try{
+
+        const response =
+        await fetch(
+
+          `${process.env.REACT_APP_API_URL}/dashboard`,
+
+          {
+            method:"GET",
+
+            credentials:"include"
+          }
+        );
+
+        // UNAUTHORIZED
+
+        if(response.status === 401){
+
+          localStorage.removeItem(
+            "userEmail"
+          );
+
+          navigate("/login");
+
+          return;
+        }
+
+        const data =
+        await response.json();
+
+        setUser(data.user);
+
+      }catch(error){
+
+        console.log(error);
+
+        setError(
+          "Unable to fetch user"
+        );
+      }
+    },
+
+    [navigate]
+  );
+
+  const fetchAnalytics =
+  useCallback(
+
+    async()=>{
+
+      try{
+
+        const response =
+        await axios.get(
+
+          `${process.env.REACT_APP_API_URL}/get-analytics`,
+
+          {
+            withCredentials:true
+          }
+        );
+
+        setAnalytics(
+          response.data
+        );
+
+      }catch(error){
+
+        console.log(error);
+
+        // UNAUTHORIZED
+
+        if(
+          error.response?.status === 401
+        ){
+
+          navigate("/login");
+        }
+      }
+    },
+
+    [navigate]
+  );
+
+  const fetchProjects =
+  useCallback(
+
+    async()=>{
+
+      try{
+
+        const response =
+        await axios.get(
+
+          `${process.env.REACT_APP_API_URL}/projects`,
+
+          {
+            withCredentials:true
+          }
+        );
+
+        setProjects(
+          response.data
+        );
+
+      }catch(error){
+
+        console.log(error);
+
+        // UNAUTHORIZED
+
+        if(
+          error.response?.status === 401
+        ){
+
+          navigate("/login");
+        }
+      }
+    },
+
+    [navigate]
+  );
+
+  const fetchTasks =
+  useCallback(
+
+    async()=>{
+
+      try{
+
+        const response =
+        await axios.get(
+
+          `${process.env.REACT_APP_API_URL}/task-projects`,
+
+          {
+            withCredentials:true
+          }
+        );
+
+        const sortedTasks =
+        response.data.sort(
+
+          (a,b)=>
+
+            new Date(b.updatedAt) -
+            new Date(a.updatedAt)
+        );
+
+        setTasks(
+          sortedTasks
+        );
+
+      }catch(error){
+
+        console.log(error);
+
+        // UNAUTHORIZED
+
+        if(
+          error.response?.status === 401
+        ){
+
+          navigate("/login");
+        }
+      }
+    },
+
+    [navigate]
+  );
+
+  const loadDashboard =
+  useCallback(
+
+    async()=>{
+
+      try{
+
+        await Promise.all([
+
+          fetchDashboard(),
+
+          fetchAnalytics(),
+
+          fetchProjects(),
+
+          fetchTasks()
+        ]);
+
+      }catch(error){
+
+        console.log(error);
+
+        setError(
+          "Failed to load dashboard"
+        );
+
+      }finally{
+
+        setLoading(false);
+      }
+    },
+
+    [
+
+      fetchDashboard,
+
+      fetchAnalytics,
+
+      fetchProjects,
+
+      fetchTasks
+    ]
+  );
 
   useEffect(()=>{
 
-    fetchDashboard();
+    loadDashboard();
 
-    fetchAnalytics();
-
-    fetchProjects();
-
-    fetchTasks();
-
-  },[]);
-
-  // FETCH USER
-
-  const fetchDashboard =
-  async()=>{
-
-    try{
-
-      const response =
-      await fetch(
-
-        "http://localhost:5000/dashboard",
-
-        {
-          method:"GET",
-
-          credentials:"include"
-        }
-      );
-
-      const data =
-      await response.json();
-
-      setUser(data.user);
-
-    }catch(error){
-
-      console.log(error);
-    }
-  };
-
-  // FETCH ANALYTICS
-
-  const fetchAnalytics =
-  async()=>{
-
-    try{
-
-      const response =
-      await axios.get(
-
-        "http://localhost:5000/get-analytics",
-
-        {
-          withCredentials:true
-        }
-      );
-
-      setAnalytics(
-        response.data
-      );
-
-    }catch(error){
-
-      console.log(error);
-    }
-  };
-
-  // FETCH PROJECTS
-
-  const fetchProjects =
-  async()=>{
-
-    try{
-
-      const response =
-      await axios.get(
-
-        "http://localhost:5000/projects",
-
-        {
-          withCredentials:true
-        }
-      );
-
-      setProjects(
-        response.data
-      );
-
-    }catch(error){
-
-      console.log(error);
-    }
-  };
-
-  // FETCH TASKS
-
-  const fetchTasks =
-  async()=>{
-
-    try{
-
-      const response =
-      await axios.get(
-
-        "http://localhost:5000/task-projects",
-
-        {
-          withCredentials:true
-        }
-      );
-
-      const sortedTasks =
-      response.data.sort(
-
-        (a,b)=>
-
-          new Date(b.updatedAt) -
-          new Date(a.updatedAt)
-      );
-
-      setTasks(
-        sortedTasks
-      );
-
-    }catch(error){
-
-      console.log(error);
-    }
-  };
-
-  // LOGOUT
+  },[loadDashboard]);
 
   const handleLogout =
   async()=>{
@@ -203,7 +296,7 @@ function Dashboard() {
 
       await fetch(
 
-        "http://localhost:5000/logout",
+        `${process.env.REACT_APP_API_URL}/logout`,
 
         {
           method:"GET",
@@ -212,7 +305,11 @@ function Dashboard() {
         }
       );
 
-      navigate("/");
+      localStorage.removeItem(
+        "userEmail"
+      );
+
+      navigate("/login");
 
     }catch(error){
 
@@ -227,8 +324,6 @@ function Dashboard() {
       <Sidebar />
 
       <div className="dashboard-main">
-
-        {/* NAVBAR */}
 
         <div className="navbar">
 
@@ -270,7 +365,16 @@ function Dashboard() {
 
         </div>
 
-        {/* STATS */}
+        {
+          error && (
+
+            <div className="error-message">
+
+              {error}
+
+            </div>
+          )
+        }
 
         <div className="dashboard-cards">
 
@@ -300,8 +404,6 @@ function Dashboard() {
 
         </div>
 
-        {/* PROJECTS */}
-
         <h2 className="section-title">
 
           My Projects
@@ -311,11 +413,29 @@ function Dashboard() {
         <div className="dashboard-grid">
 
           {
-            projects.length === 0 ? (
+            loading ? (
+
+              <div className="small-loader">
+
+                Loading Projects...
+
+              </div>
+
+            ) : projects.length === 0 ? (
 
               <div className="empty-card">
 
-                No Projects Found
+                <div>
+
+                  <i className="fa-solid fa-folder-open"></i>
+
+                  <h3>
+
+                    No Projects Found
+
+                  </h3>
+
+                </div>
 
               </div>
 
@@ -344,8 +464,6 @@ function Dashboard() {
 
         </div>
 
-        {/* TASKS */}
-
         <h2 className="section-title">
 
           Your Recent Tasks
@@ -355,11 +473,29 @@ function Dashboard() {
         <div className="dashboard-grid">
 
           {
-            tasks.length === 0 ? (
+            loading ? (
+
+              <div className="small-loader">
+
+                Loading Tasks...
+
+              </div>
+
+            ) : tasks.length === 0 ? (
 
               <div className="empty-card">
 
-                No Tasks Found
+                <div>
+
+                  <i className="fa-solid fa-list-check"></i>
+
+                  <h3>
+
+                    No Tasks Found
+
+                  </h3>
+
+                </div>
 
               </div>
 
@@ -405,9 +541,9 @@ function Dashboard() {
 
                     <div
                     className={`dashboard-task-status ${
-                      task.status === "Done"
+                      task.currentStatus === "Done"
                       ? "done"
-                      : task.status === "In Progress"
+                      : task.currentStatus === "In Progress"
                       ? "progress"
                       : "todo"
                     }`}
@@ -415,7 +551,6 @@ function Dashboard() {
 
                       {
                         task.currentStatus
-            
                       }
 
                     </div>

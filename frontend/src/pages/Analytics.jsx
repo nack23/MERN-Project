@@ -1,7 +1,12 @@
 import {
   useEffect,
-  useState
+  useState,
+  useCallback
 } from "react";
+
+import {
+  useNavigate
+} from "react-router-dom";
 
 import Sidebar
 from "../components/Sidebar";
@@ -12,6 +17,9 @@ from "axios";
 import "../styles/Analytics.css";
 
 function Analytics(){
+
+  const navigate =
+  useNavigate();
 
   const [
     analytics,
@@ -27,40 +35,70 @@ function Analytics(){
     submissions:[]
   });
 
-  // FETCH ANALYTICS
+  const [
+    loading,
+    setLoading
+  ] = useState(true);
+
+  const [
+    error,
+    setError
+  ] = useState("");
 
   const fetchAnalytics =
-  async()=>{
+  useCallback(
 
-    try{
+    async()=>{
 
-      const response =
-      await axios.get(
+      try{
 
-        "http://localhost:5000/get-analytics",
+        const response =
+        await axios.get(
 
-        {
-          withCredentials:true
+          `${process.env.REACT_APP_API_URL}/get-analytics`,
+
+          {
+            withCredentials:true
+          }
+        );
+
+        setAnalytics(
+          response.data
+        );
+
+      }catch(error){
+
+        console.log(error);
+
+        // UNAUTHORIZED
+
+        if(
+          error.response?.status === 401
+        ){
+
+          navigate("/login");
+
+          return;
         }
-      );
 
-      setAnalytics(
-        response.data
-      );
+        setError(
+          "Failed to load analytics"
+        );
 
-    }catch(error){
+      }finally{
 
-      console.log(error);
-    }
-  };
+        setLoading(false);
+      }
+    },
 
-  // USE EFFECT
+    [navigate]
+  );
 
   useEffect(()=>{
 
     fetchAnalytics();
 
-  },[]);
+  },[fetchAnalytics]);
 
   return(
 
@@ -70,263 +108,275 @@ function Analytics(){
 
       <div className="analytics-content">
 
-        {/* TITLE */}
-
         <h1>
 
           Analytics
 
         </h1>
 
-        {/* STATS */}
+        {
+          error && (
 
-        <div className="analytics-stats">
+            <div className="error-message">
 
-          {/* TOTAL */}
+              {error}
 
-          <div className="analytics-box">
+            </div>
+          )
+        }
 
-            <h3>
+        {
+          loading ? (
 
-              Total Tasks
+            <div className="small-loader">
 
-            </h3>
+              Loading Analytics...
 
-            <h2>
+            </div>
 
-              {
-                analytics.totalTasks
-              }
+          ) : (
 
-            </h2>
+            <>
 
-          </div>
+              <div className="analytics-stats">
 
-          {/* COMPLETED */}
+                <div className="analytics-box">
 
-          <div className="analytics-box">
+                  <h3>
 
-            <h3>
+                    Total Tasks
 
-              Completed
+                  </h3>
 
-            </h3>
+                  <h2>
 
-            <h2>
+                    {
+                      analytics.totalTasks
+                    }
 
-              {
-                analytics.completedTasks
-              }
+                  </h2>
 
-            </h2>
+                </div>
 
-          </div>
+                <div className="analytics-box">
 
-          {/* PENDING */}
+                  <h3>
 
-          <div className="analytics-box">
+                    Completed
 
-            <h3>
+                  </h3>
 
-              Pending
+                  <h2>
 
-            </h3>
+                    {
+                      analytics.completedTasks
+                    }
 
-            <h2>
+                  </h2>
 
-              {
-                analytics.pendingTasks
-              }
+                </div>
 
-            </h2>
+                <div className="analytics-box">
 
-          </div>
+                  <h3>
 
-        </div>
+                    Pending
 
-        {/* STATUS GUIDE */}
+                  </h3>
 
-        <div className="status-guide">
+                  <h2>
 
-          <div className="guide-item">
+                    {
+                      analytics.pendingTasks
+                    }
 
-            <span className="guide-color done-guide">
+                  </h2>
 
-            </span>
-
-            <p>
-
-              Green = Done
-
-            </p>
-
-          </div>
-
-          <div className="guide-item">
-
-            <span className="guide-color progress-guide">
-
-            </span>
-
-            <p>
-
-              Orange = In Progress
-
-            </p>
-
-          </div>
-
-          <div className="guide-item">
-
-            <span className="guide-color todo-guide">
-
-            </span>
-
-            <p>
-
-              Red = To Do
-
-            </p>
-
-          </div>
-
-        </div>
-
-        {/* SUBMISSIONS */}
-
-        <div className="submission-section">
-
-          <h2>
-
-            Latest Member Submissions
-
-          </h2>
-
-          {
-            analytics.submissions
-            .length === 0 ? (
-
-              <div className="no-submission">
-
-                No Submission Found
+                </div>
 
               </div>
 
-            ) : (
+              <div className="status-guide">
 
-              <div className="submission-grid">
+                <div className="guide-item">
+
+                  <span className="guide-color done-guide">
+
+                  </span>
+
+                  <p>
+
+                    Green = Done
+
+                  </p>
+
+                </div>
+
+                <div className="guide-item">
+
+                  <span className="guide-color progress-guide">
+
+                  </span>
+
+                  <p>
+
+                    Orange = In Progress
+
+                  </p>
+
+                </div>
+
+                <div className="guide-item">
+
+                  <span className="guide-color todo-guide">
+
+                  </span>
+
+                  <p>
+
+                    Red = To Do
+
+                  </p>
+
+                </div>
+
+              </div>
+
+              <div className="submission-section">
+
+                <h2>
+
+                  Latest Member Submissions
+
+                </h2>
 
                 {
                   analytics.submissions
-                  .map((item)=>(
+                  .length === 0 ? (
 
-                    <div
-                    className="submission-card"
-                    key={item._id}
-                    >
+                    <div className="no-submission">
 
-                      {/* PROJECT */}
+                      <i className="fa-solid fa-chart-simple"></i>
 
-                      <h3>
+                      <p>
 
-                        {
-                          item.project
-                          ?.projectName
-                        }
+                        No Submission Found
 
-                      </h3>
+                      </p>
 
-                      {/* DESCRIPTION */}
+                    </div>
 
-                      <div
-                      className="submission-description"
-                      >
+                  ) : (
 
-                        {
-                          item.project
-                          ?.description
-                        }
-
-                      </div>
-
-                      {/* INFO */}
-
-                      <div
-                      className="submission-info"
-                      >
-
-                        <span>
-
-                          Member:
-                          {
-                            item.user
-                            ?.name
-                          }
-
-                        </span>
-
-                        <span
-                        className={
-
-                          item.status ===
-                          "Done"
-
-                          ? "done-status"
-
-                          : item.status ===
-                          "In Progress"
-
-                          ? "progress-status"
-
-                          : "todo-status"
-                        }
-                        >
-
-                          {
-                            item.status
-                          }
-
-                        </span>
-
-                      </div>
-
-                      {/* ANSWER */}
+                    <div className="submission-grid">
 
                       {
-                        item.answer &&
-                        (
+                        analytics.submissions
+                        .map((item)=>(
 
                           <div
-                          className="answer-container"
+                          className="submission-card"
+                          key={item._id}
                           >
 
-                            <h4>
-
-                              Submitted Answer
-
-                            </h4>
-
-                            <p>
+                            <h3>
 
                               {
-                                item.answer
+                                item.project
+                                ?.projectName
                               }
 
-                            </p>
+                            </h3>
+
+                            <div
+                            className="submission-description"
+                            >
+
+                              {
+                                item.project
+                                ?.description
+                              }
+
+                            </div>
+
+                            <div
+                            className="submission-info"
+                            >
+
+                              <span>
+
+                                Member:
+                                {
+                                  item.user
+                                  ?.name
+                                }
+
+                              </span>
+
+                              <span
+                              className={
+
+                                item.status ===
+                                "Done"
+
+                                ? "done-status"
+
+                                : item.status ===
+                                "In Progress"
+
+                                ? "progress-status"
+
+                                : "todo-status"
+                              }
+                              >
+
+                                {
+                                  item.status
+                                }
+
+                              </span>
+
+                            </div>
+
+                            {
+                              item.answer &&
+                              (
+
+                                <div
+                                className="answer-container"
+                                >
+
+                                  <h4>
+
+                                    Submitted Answer
+
+                                  </h4>
+
+                                  <p>
+
+                                    {
+                                      item.answer
+                                    }
+
+                                  </p>
+
+                                </div>
+                              )
+                            }
 
                           </div>
-                        )
+                        ))
                       }
 
                     </div>
-                  ))
+                  )
                 }
 
               </div>
-            )
-          }
 
-        </div>
+            </>
+          )
+        }
 
       </div>
 

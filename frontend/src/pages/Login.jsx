@@ -48,7 +48,7 @@ function Login() {
       const response =
       await fetch(
 
-        "http://localhost:5000/login-data",
+        `${process.env.REACT_APP_API_URL}/login-data`,
 
         {
           method:"POST",
@@ -68,7 +68,6 @@ function Login() {
         }
       );
 
-      const data =
       await response.json();
 
       // SUCCESS LOGIN

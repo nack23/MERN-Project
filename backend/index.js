@@ -16,7 +16,12 @@ dbconnection();
 // middleware
 app.use(cors({
 
-    origin: "http://localhost:3000",
+    origin: [
+
+        "http://localhost:3000",
+
+        "https://mern-frontend-production-bfb4.up.railway.app"
+    ],
 
     credentials: true
 }));

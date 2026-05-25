@@ -4,9 +4,33 @@ function Navbar() {
 
     <div className="navbar">
 
-      <h1>Dashboard</h1>
+      <div className="navbar-left">
 
-      <button>Logout</button>
+        <h1>
+
+          Dashboard
+
+        </h1>
+
+        <p className="welcome-text">
+
+          Welcome Back
+
+          <span className="username">
+
+            Admin
+
+          </span>
+
+        </p>
+
+      </div>
+
+      <button className="logout-btn">
+
+        Logout
+
+      </button>
 
     </div>
   );

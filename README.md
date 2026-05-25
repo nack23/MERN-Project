@@ -10,16 +10,19 @@ Project Live link: https://mern-frontend-production-bfb4.up.railway.app/
 
 # Features
 
-* User Signup & Login
-* JWT Authentication
-* Protected Routes
-* Create & Manage Projects
-* Task Management
+* User Signup & Login Authentication
+* JWT Secure Authentication
+* Protected Backend APIs
+* Create Projects
+* Add & Remove Team Members
+* Task Assignment System
+* Task Status Tracking
 * Analytics Dashboard
 * Responsive Mobile UI
-* Secure Cookies Authentication
-* REST API Backend
+* Secure Cookie-Based Sessions
+* REST API Integration
 * MongoDB Database Integration
+* Modern Dashboard Interface
 
 ---
 
@@ -60,9 +63,9 @@ backend/
 ## Backend `.env`
 
 ```env
-PORT=5000
+PORT=5000 (not mandatory)
 
-MONGO_URI=your_mongodb_connection
+MONGO_URL=your_mongodb_connection
 
 JWT_SECRET=your_secret_key
 ```

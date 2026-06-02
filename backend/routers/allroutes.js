@@ -21,11 +21,13 @@ const getTaskProjects =require("../controllers/getTaskProjects");
 const updateProjectStatus =require("../controllers/updateProjectStatus");
 const getAnalytics =require("../controllers/getAnalytics");
 
+const {signupLimiter, loginLimiter} = require("../middleware/rateLimiter");
+
 // Signup
-router.post("/signup-data", signupData);
+router.post("/signup-data", signupLimiter ,signupData);
 
 // Login
-router.post("/login-data", loginData);
+router.post("/login-data", loginLimiter ,loginData);
 
 // Dashboard
 router.get(
